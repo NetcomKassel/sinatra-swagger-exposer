@@ -91,6 +91,12 @@ module Sinatra
       set_if_not_exist(produces, :produces)
     end
 
+    # Provide consumes params for the endpoint
+    # @param consumes [Array<String>] the response types
+    def endpoint_consumes(*consumes)
+      set_if_not_exist(consumes, :consumes)
+    end
+
     # Define parameter for the endpoint
     def endpoint_parameter(name, description, how_to_pass, required, type, params = {})
       parameters = settings.swagger_current_endpoint_parameters
@@ -118,6 +124,8 @@ module Sinatra
             endpoint_tags *param_value
           when :produces
             endpoint_produces *param_value
+          when :consumes
+            endpoint_consumes *param_value
           when :path
             endpoint_path param_value
           when :parameters
@@ -221,7 +229,8 @@ module Sinatra
         current_endpoint_info[:description],
         current_endpoint_info[:tags],
         current_endpoint_info[:path],
-        current_endpoint_info[:produces])
+        current_endpoint_info[:produces],
+        current_endpoint_info[:consumes])
       settings.swagger_endpoints << endpoint
       current_endpoint_info.clear
       current_endpoint_parameters.clear

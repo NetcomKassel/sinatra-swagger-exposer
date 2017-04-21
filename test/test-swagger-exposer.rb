@@ -57,8 +57,8 @@ class TestSwaggerExposer < Minitest::Test
       JSON.parse(last_response.body).must_equal(
         {
           'swagger' => '2.0',
-          'consumes' => ['application/json'],
-          'produces' => ['application/json'],
+          # 'consumes' => ['application/json'],
+          # 'produces' => ['application/json'],
           'paths' => {
             '/swagger_doc.json' => {
               'get' => {

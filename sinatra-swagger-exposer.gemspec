@@ -8,7 +8,7 @@ excluded_patterns = ['test/', 'example/', '.travis.yml', '.gitignore']
 Gem::Specification.new do |spec|
   spec.name = 'sinatra-swagger-exposer'
   spec.version = Sinatra::SwaggerExposer::VERSION
-  spec.authors = ['Julien Kirch']
+  spec.authors = ['Julien Kirch', 'Ralf Herzog']
 
   spec.summary = %q{Expose swagger API from your Sinatra app}
   spec.description = %q{This Sinatra extension enable you to add metadata to your code to expose your API as a Swagger endpoint and to validate and enrich the invocation parameters}

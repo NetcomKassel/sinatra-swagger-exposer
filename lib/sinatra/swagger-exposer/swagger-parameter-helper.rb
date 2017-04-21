@@ -24,6 +24,8 @@ module Sinatra
       TYPE_STRING = 'string'
       TYPE_ARRAY = 'array'
 
+      TYPE_FILE = 'file'
+
       PRIMITIVE_TYPES = [
         TYPE_INTEGER,
         TYPE_LONG,
@@ -35,11 +37,10 @@ module Sinatra
         TYPE_DATE,
         TYPE_DATE_TIME,
         TYPE_PASSWORD,
+        TYPE_FILE
       ]
 
-      TYPE_FILE = 'file'
-
-      PRIMITIVE_TYPES_FOR_NON_BODY = [TYPE_STRING, TYPE_NUMBER, TYPE_INTEGER, TYPE_BOOLEAN]
+      PRIMITIVE_TYPES_FOR_NON_BODY = [TYPE_STRING, TYPE_NUMBER, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_FILE]
 
       PARAMS_FORMAT = :format
       PARAMS_DEFAULT = :default

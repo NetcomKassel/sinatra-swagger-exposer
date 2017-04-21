@@ -21,7 +21,7 @@ module Sinatra
       # A processor for a request, apply the parameters processors then execute the query code
       class SwaggerRequestProcessor
 
-        attr_reader :processors_dispatchers, :response_processors, :produces
+        attr_reader :processors_dispatchers, :response_processors, :produces, :consumes
 
         # @param produces [Array<String>]
         def initialize(produces = nil)

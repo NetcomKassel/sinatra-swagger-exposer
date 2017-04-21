@@ -12,12 +12,13 @@ class TestSwaggerRequestProcessorCreator < Minitest::Test
 
     class FakeSwaggerEndpointForTestSwaggerRequestProcessorCreator
 
-      attr_reader :parameters, :produces, :responses
+      attr_reader :parameters, :produces, :consumes, :responses
 
-      def initialize(parameters, responses = {}, produces = [])
+      def initialize(parameters, responses = {}, produces = [], consumes = [])
         @parameters = parameters
         @responses = responses
         @produces = produces
+        @consumes = consumes
       end
 
     end

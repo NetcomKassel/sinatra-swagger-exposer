@@ -13,7 +13,7 @@ module Sinatra
 
         include SwaggerConfigurationUtilities
 
-        attr_reader :path, :type, :parameters, :responses, :produces
+        attr_reader :path, :type, :parameters, :responses, :produces, :consumes
 
         # @param type [String] the http verb
         # @param sinatra_path [String] the sinatra path
@@ -24,7 +24,8 @@ module Sinatra
         # @param tags [Array<String>] a list of tags
         # @param explicit_path [String] an explicit path if the sinatra path is a regex
         # @param produces [Array<String>] the result types
-        def initialize(type, sinatra_path, parameters, responses, summary, description, tags, explicit_path, produces)
+        # @param consumes [Array<String>] the query types
+        def initialize(type, sinatra_path, parameters, responses, summary, description, tags, explicit_path, produces, consumes)
           @type = type
           @path = swagger_path(sinatra_path, explicit_path)
 
@@ -44,6 +45,9 @@ module Sinatra
           end
           if produces
             @attributes[:produces] = produces
+          end
+          if consumes
+            @attributes[:consumes] = consumes
           end
         end
 

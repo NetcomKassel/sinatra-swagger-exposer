@@ -14,8 +14,8 @@ module Sinatra
       def to_swagger
         result = {
           swagger: '2.0',
-          consumes: ['application/json'],
-          produces: ['application/json'],
+          # consumes: ['application/json'],
+          # produces: ['application/json'],
         }
         if @swagger_info
           result[:info] = @swagger_info.to_swagger

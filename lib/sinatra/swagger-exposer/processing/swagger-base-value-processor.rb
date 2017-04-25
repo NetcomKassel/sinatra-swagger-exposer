@@ -34,16 +34,34 @@ module Sinatra
           unless params.is_a? Hash
             raise SwaggerInvalidException.new("Value [#{@name}] should be an object but is a [#{params.class}]")
           end
-          if params.key?(@name) && (!params[@name].nil?)
-            params[@name] = validate_value(params[@name])
-          elsif @required
-            raise SwaggerInvalidException.new("Mandatory value [#{@name}] is missing")
-          elsif @default
-            params[@name] = @default
+
+          if @attributes_processors
+            @attributes_processors.each do |attributes_processor|
+              if attributes_processor.required && !params.key?(attributes_processor.name)
+                raise SwaggerInvalidException.new("Mandatory value [#{attributes_processor.name}] is missing")
+              end
+            end
+          end
+
+          params.each_pair do |key, value|
+            next if key == 'parsed_body' # Do not validate 'parsed_body'
+            if @attributes_processors.nil?
+              # No attribute processor for key
+              # Validate against self attributes
+              value = @default if value.nil? && @default
+              validate_value(value) # Local param validation
+            else
+              # Validate against processor
+              attributes_processor = @attributes_processors.find {|ap| ap.name == key}
+              if attributes_processor.nil?
+                raise SwaggerInvalidException, "Extra object [#{@name}] found"
+              end
+              value = attributes_processor.default if value.nil? && attributes_processor.default
+              attributes_processor.validate_value(value)
+            end
           end
           params
         end
-
       end
     end
   end

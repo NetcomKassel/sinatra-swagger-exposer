@@ -32,6 +32,7 @@ module Sinatra
           @parameters = parameters
           @responses = responses
           @produces = produces
+          @consumes = consumes
 
           @attributes = {}
           if summary

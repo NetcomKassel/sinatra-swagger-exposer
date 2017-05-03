@@ -57,6 +57,7 @@ module Sinatra
         # @param block_params [Array] the block parameters
         # @param block the block containing the route content
         def run(app, block_params, &block)
+          # TODO: Why is there only one element as a dispatcher when I expect two?
           parsed_body = {}
           if JSON_CONTENT_TYPE.like?(app.env['CONTENT_TYPE'])
             body = app.request.body.read
@@ -67,8 +68,10 @@ module Sinatra
                 return [400, {:code => 400, :message => e.message}.to_json]
               end
             end
+          else
+            # Sinatra fallback
+            # parsed_body = app.request.params
           end
-          app.params['parsed_body'] = parsed_body
           unless @processors_dispatchers.empty?
             @processors_dispatchers.each do |processor_dispatcher|
               begin
@@ -79,6 +82,7 @@ module Sinatra
               end
             end
           end
+          app.params['parsed_body'] = parsed_body
           if block
             # Execute the block in the context of the app
             app.instance_exec(*block_params, &block)

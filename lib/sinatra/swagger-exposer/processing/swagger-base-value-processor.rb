@@ -35,16 +35,16 @@ module Sinatra
             raise SwaggerInvalidException.new("Value [#{@name}] should be an object but is a [#{params.class}]")
           end
 
-          if @attributes_processors
-            @attributes_processors.each do |attributes_processor|
-              if attributes_processor.required && !params.key?(attributes_processor.name)
-                raise SwaggerInvalidException.new("Mandatory value [#{attributes_processor.name}] is missing")
-              end
+          @attributes_processors.each do |attributes_processor|
+            if attributes_processor.required && !params.key?(attributes_processor.name)
+              raise SwaggerInvalidException.new("Mandatory value [#{attributes_processor.name}] is missing")
             end
-          end
+          end if @attributes_processors
 
-          params.each_pair do |key, value|
-            next if key == 'parsed_body' # Do not validate 'parsed_body'
+          key, value = params.shift
+
+          # params.each_pair do |key, value|
+          #   next if key == 'parsed_body' # Do not validate 'parsed_body'
             if @attributes_processors.nil?
               # No attribute processor for key
               # Validate against self attributes
@@ -59,8 +59,7 @@ module Sinatra
               value = attributes_processor.default if value.nil? && attributes_processor.default
               attributes_processor.validate_value(value)
             end
-          end
-          params
+          # end
         end
       end
     end

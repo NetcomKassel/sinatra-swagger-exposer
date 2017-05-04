@@ -38,7 +38,11 @@ module Sinatra
             # No attribute processor for key
             # Validate against self attributes
             value = @default if value.nil? && @default
-            validate_value(value) # Local param validation
+            if value.nil? && !@required
+              # Nothing to do
+            else
+              validate_value(value) # Local param validation
+            end
           else
             # Validate against processor
             @attributes_processors.each do |attributes_processor|

@@ -30,36 +30,25 @@ module Sinatra
           @required || (!@default.nil?)
         end
 
-        def process(params)
-          unless params.is_a? Hash
-            raise SwaggerInvalidException.new("Value [#{@name}] should be an object but is a [#{params.class}]")
-          end
-
-          @attributes_processors.each do |attributes_processor|
-            if attributes_processor.required && !params.key?(attributes_processor.name)
-              raise SwaggerInvalidException.new("Mandatory value [#{attributes_processor.name}] is missing")
-            end
-          end if @attributes_processors
-
-          key, value = params.shift
-
-          # params.each_pair do |key, value|
-          #   next if key == 'parsed_body' # Do not validate 'parsed_body'
-            if @attributes_processors.nil?
-              # No attribute processor for key
-              # Validate against self attributes
-              value = @default if value.nil? && @default
-              validate_value(value) # Local param validation
-            else
-              # Validate against processor
-              attributes_processor = @attributes_processors.find {|ap| ap.name == key}
+        def process(value, parsed_body = nil)
+          # unless value.is_a? Hash
+          #   raise SwaggerInvalidException.new("Value [#{@name}] should be an object but is a [#{parsed_body.class}]")
+          # end
+          if @attributes_processors.nil?
+            # No attribute processor for key
+            # Validate against self attributes
+            value = @default if value.nil? && @default
+            validate_value(value) # Local param validation
+          else
+            # Validate against processor
+            @attributes_processors.each do |attributes_processor|
               if attributes_processor.nil?
                 raise SwaggerInvalidException, "Extra object [#{@name}] found"
               end
-              value = attributes_processor.default if value.nil? && attributes_processor.default
-              attributes_processor.validate_value(value)
+              attributes_processor.validate_value(value[attributes_processor.name.to_s])
             end
-          # end
+          end
+          parsed_body[@name.to_s] = value unless parsed_body.nil?
         end
       end
     end

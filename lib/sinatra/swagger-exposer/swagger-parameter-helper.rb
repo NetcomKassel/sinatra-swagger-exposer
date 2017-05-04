@@ -5,26 +5,27 @@ module Sinatra
     # Helper for handling the parameters
     module SwaggerParameterHelper
 
-      HOW_TO_PASS_BODY = 'body'
-      HOW_TO_PASS_HEADER = 'header'
-      HOW_TO_PASS_PATH = 'path'
-      HOW_TO_PASS_QUERY = 'query'
-      HOW_TO_PASS = [HOW_TO_PASS_PATH, HOW_TO_PASS_QUERY, HOW_TO_PASS_HEADER, 'formData', HOW_TO_PASS_BODY]
+      HOW_TO_PASS_BODY = 'body'.freeze
+      HOW_TO_PASS_HEADER = 'header'.freeze
+      HOW_TO_PASS_PATH = 'path'.freeze
+      HOW_TO_PASS_QUERY = 'query'.freeze
+      HOW_TO_PASS_FORM_DATA = 'formData'.freeze
+      HOW_TO_PASS = [HOW_TO_PASS_PATH, HOW_TO_PASS_QUERY, HOW_TO_PASS_HEADER, HOW_TO_PASS_FORM_DATA, HOW_TO_PASS_BODY].freeze
 
-      TYPE_BOOLEAN = 'boolean'
-      TYPE_BYTE = 'byte'
-      TYPE_DATE = 'date'
-      TYPE_DOUBLE = 'double'
-      TYPE_DATE_TIME = 'dateTime'
-      TYPE_FLOAT = 'float'
-      TYPE_INTEGER = 'integer'
-      TYPE_LONG = 'long'
-      TYPE_NUMBER = 'number'
-      TYPE_PASSWORD = 'password'
-      TYPE_STRING = 'string'
-      TYPE_ARRAY = 'array'
+      TYPE_BOOLEAN = 'boolean'.freeze
+      TYPE_BYTE = 'byte'.freeze
+      TYPE_DATE = 'date'.freeze
+      TYPE_DOUBLE = 'double'.freeze
+      TYPE_DATE_TIME = 'dateTime'.freeze
+      TYPE_FLOAT = 'float'.freeze
+      TYPE_INTEGER = 'integer'.freeze
+      TYPE_LONG = 'long'.freeze
+      TYPE_NUMBER = 'number'.freeze
+      TYPE_PASSWORD = 'password'.freeze
+      TYPE_STRING = 'string'.freeze
+      TYPE_ARRAY = 'array'.freeze
 
-      TYPE_FILE = 'file'
+      TYPE_FILE = 'file'.freeze
 
       PRIMITIVE_TYPES = [
         TYPE_INTEGER,
@@ -38,9 +39,9 @@ module Sinatra
         TYPE_DATE_TIME,
         TYPE_PASSWORD,
         TYPE_FILE
-      ]
+      ].freeze
 
-      PRIMITIVE_TYPES_FOR_NON_BODY = [TYPE_STRING, TYPE_NUMBER, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_FILE]
+      PRIMITIVE_TYPES_FOR_NON_BODY = [TYPE_STRING, TYPE_NUMBER, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_FILE].freeze
 
       PARAMS_FORMAT = :format
       PARAMS_DEFAULT = :default

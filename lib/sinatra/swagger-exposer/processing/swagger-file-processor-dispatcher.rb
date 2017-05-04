@@ -8,6 +8,8 @@ module Sinatra
 
       # Fake dispatcher for files
       class SwaggerFileProcessorDispatcher
+        
+        attr_reader :name, :required
 
         # Initialize
         # @param name [String] the name
@@ -24,9 +26,11 @@ module Sinatra
         # Process the value
         def process(app, parsed_body)
           if app.params.key?(@name.to_s) && (!app.params[@name.to_s].nil?)
+            parsed_body[@name.to_s] = app.params[@name.to_s]
           elsif @required
             raise SwaggerInvalidException.new("Mandatory value [#{@name}] is missing")
           end
+          nil
         end
 
       end

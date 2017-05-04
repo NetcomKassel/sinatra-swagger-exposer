@@ -51,13 +51,13 @@ module Sinatra
 
         JSON_CONTENT_TYPE = MIME::Types['application/json'].first
         HTML_CONTENT_TYPE = MIME::Types['text/html'].first
+        MULTIPART_FD_CONTENT_TYPE = MIME::Types['multipart/form-data'].first
 
         # Run the processor the call the route content
         # @param app the sinatra app being run
         # @param block_params [Array] the block parameters
         # @param block the block containing the route content
         def run(app, block_params, &block)
-          # TODO: Why is there only one element as a dispatcher when I expect two?
           parsed_body = {}
           if JSON_CONTENT_TYPE.like?(app.env['CONTENT_TYPE'])
             body = app.request.body.read
@@ -65,24 +65,24 @@ module Sinatra
               begin
                 parsed_body = JSON.parse(body)
               rescue JSON::ParserError => e
-                return [400, {:code => 400, :message => e.message}.to_json]
+                return [400, {code: 400, message: e.message}.to_json]
               end
             end
           else
-            # Sinatra fallback
-            # parsed_body = app.request.params
+            # Unused
           end
-          unless @processors_dispatchers.empty?
-            @processors_dispatchers.each do |processor_dispatcher|
-              begin
-                processor_dispatcher.process(app, parsed_body)
-              rescue SwaggerInvalidException => e
-                app.content_type :json
-                return [400, {:code => 400, :message => e.message}.to_json]
-              end
+
+          @processors_dispatchers.each do |processor_dispatcher|
+            begin
+              processor_dispatcher.process(app, parsed_body)
+            rescue SwaggerInvalidException => e
+              app.content_type :json
+              return [400, {:code => 400, :message => e.message}.to_json]
             end
-          end
+          end unless @processors_dispatchers.empty?
+
           app.params['parsed_body'] = parsed_body
+
           if block
             # Execute the block in the context of the app
             app.instance_exec(*block_params, &block)
@@ -115,10 +115,10 @@ module Sinatra
             # No content and no content type => everything is OK
           elsif @produces
             # if there is no content type Sinatra will default to html so we simulate it here
-            if content_type.nil? && @produces_types.any? { |produce| produce.like?(HTML_CONTENT_TYPE) }
+            if content_type.nil? && @produces_types.any? {|produce| produce.like?(HTML_CONTENT_TYPE)}
               content_type = HTML_CONTENT_TYPE
             end
-            unless @produces_types.any? { |produce| produce.like?(content_type) }
+            unless @produces_types.any? {|produce| produce.like?(content_type)}
               raise SwaggerInvalidException.new("Undeclared content type [#{content_type}], declared content type are [#{@produces.join(', ')}]")
             end
           elsif !JSON_CONTENT_TYPE.like?(content_type)

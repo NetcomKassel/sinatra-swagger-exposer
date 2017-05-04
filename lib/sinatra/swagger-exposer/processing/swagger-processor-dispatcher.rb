@@ -51,15 +51,20 @@ module Sinatra
 
         # Process the value
         def process(app, parsed_body)
+          value = app.params[@processor.name.to_s]
           case @how_to_pass
             when HOW_TO_PASS_PATH
               # can't validate
             when HOW_TO_PASS_QUERY
-              @processor.process(app.params)
+              @processor.process(value)
             when HOW_TO_PASS_HEADER
-              @processor.process(HashForHeaders.new(app))
+              # TODO: Fix method extra parameter
+              @processor.process(value, HashForHeaders.new(value))
             when HOW_TO_PASS_BODY
-              @processor.process(parsed_body || {})
+              real_parsed_body = {"#{@processor.name}": parsed_body}
+              @processor.process(parsed_body, real_parsed_body)
+            when HOW_TO_PASS_FORM_DATA
+              @processor.process(value, parsed_body)
           end
         end
 

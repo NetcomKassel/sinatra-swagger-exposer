@@ -36,9 +36,7 @@ module Sinatra
           rescue ::JSON::ParserError => e
             raise SwaggerInvalidException.new("Response is not a valid json [#{response_body}]")
           end
-          if @processor
-            @processor.validate_value(parsed_response_body)
-          end
+          @processor.validate_value(parsed_response_body) if @processor
         end
 
       end

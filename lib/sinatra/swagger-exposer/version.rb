@@ -1,5 +1,5 @@
 module Sinatra
   module SwaggerExposer
-    VERSION = '0.4.0'
+    VERSION = '1.0.0'.freeze
   end
 end

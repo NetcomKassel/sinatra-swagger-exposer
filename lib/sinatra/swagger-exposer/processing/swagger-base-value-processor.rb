@@ -40,8 +40,10 @@ module Sinatra
             value = @default if value.nil? && @default
             if value.nil? && !@required
               # Nothing to do
+            elsif value.is_a? Hash
+              validate_value(value[@name])
             else
-              validate_value(value) # Local param validation
+              validate_value(value)
             end
           else
             # Validate against processor
@@ -52,6 +54,7 @@ module Sinatra
               attributes_processor.validate_value(value[attributes_processor.name.to_s])
             end
           end
+
           parsed_body[@name.to_s] = value unless parsed_body.nil?
         end
       end

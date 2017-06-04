@@ -31,12 +31,13 @@ module Sinatra
 
         def useful?
           super ||
-            [TYPE_NUMBER, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_DATE_TIME].include?(@type) || # Must check type
+            [TYPE_STRING, TYPE_NUMBER, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_DATE_TIME].include?(@type) || # Must check type
             (@params.key? PARAMS_MIN_LENGTH) || (@params.key? PARAMS_MAX_LENGTH) # Must check string
         end
 
         # Dispatch method
         def validate_value(value)
+          return nil if value.nil? && !@required
           case @type
             when TYPE_NUMBER
               return validate_value_number(value)

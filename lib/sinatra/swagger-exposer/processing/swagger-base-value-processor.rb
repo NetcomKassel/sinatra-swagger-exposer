@@ -32,7 +32,7 @@ module Sinatra
 
         def process_value(value, response = {})
           if value.nil?
-            if @params[:required].nil? || @params[:required]
+            if @required || @params[:required]
               raise SwaggerInvalidException, "Missing object [#{@name}]"
             end
           end

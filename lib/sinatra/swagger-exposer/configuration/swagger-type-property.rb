@@ -16,7 +16,7 @@ module Sinatra
         include SwaggerConfigurationUtilities
         include SwaggerParameterValidationHelper
 
-        OTHER_PROPERTIES = [:example, :description, :format, :minLength, :maxLength, :default]
+        OTHER_PROPERTIES = [:example, :description, :format, :minLength, :maxLength, :default, :enum, :required]
         PROPERTIES = [:type] + OTHER_PROPERTIES
 
         def initialize(type_name, property_name, property_properties, known_types)

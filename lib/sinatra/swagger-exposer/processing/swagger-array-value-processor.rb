@@ -30,8 +30,11 @@ module Sinatra
 
         def validate_value(value)
           if value
-            if value.is_a? Array
-              value.collect { |i| @processor_for_values.validate_value(i) }
+            if value.is_a?(Array) || value.is_a?(ActiveRecord::Relation)
+              response = value.collect do |i|
+                @processor_for_values.validate_value i
+              end
+              response
             else
               raise SwaggerInvalidException.new("Value [#{name}] should be an array but is [#{value}]")
             end
@@ -39,7 +42,6 @@ module Sinatra
             nil
           end
         end
-
       end
     end
   end

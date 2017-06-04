@@ -74,7 +74,7 @@ module Sinatra
 
           @processors_dispatchers.each do |processor_dispatcher|
             begin
-              processor_dispatcher.process(app, parsed_body)
+              processor_dispatcher.process_value(app, parsed_body)
             rescue SwaggerInvalidException => e
               app.content_type :json
               return [400, {:code => 400, :message => e.message}.to_json]
@@ -100,7 +100,8 @@ module Sinatra
           if @response_processors.key?(response_status)
             response_processor = response_processors[response_status]
             if JSON_CONTENT_TYPE.like?(content_type) && response_processor
-              response_processor.validate_response(response_body)
+              response = response_processor.validate_response(response_body)
+              [response_status, response.to_json]
             end
           else
             raise SwaggerInvalidException.new("Status with unknown response status [#{response_status}], known statuses are [#{@response_processors.keys.join(', ')}] response value is #{response_body}")

@@ -115,8 +115,12 @@ module Sinatra
         # Validate a date time
         def validate_value_date_time(value)
           begin
-            DateTime.rfc3339(value)
-          rescue ArgumentError
+            if value.is_a? Time
+              Time.now.to_datetime.rfc3339
+            else
+              DateTime.rfc3339(value)
+            end
+          rescue ArgumentError, TypeError
             raise SwaggerInvalidException.new("Value [#{name}] should be a date time but is [#{value}]")
           end
         end
@@ -126,6 +130,11 @@ module Sinatra
           if value
             validate_value_string_length(value, PARAMS_MIN_LENGTH, '>=')
             validate_value_string_length(value, PARAMS_MAX_LENGTH, '<=')
+          end
+          if params[:enum]
+            unless params[:enum].include? value
+              raise SwaggerInvalidException.new("Value [#{name}] should be one of ['#{params[:enum].join('\', \'')}']")
+            end
           end
           value
         end

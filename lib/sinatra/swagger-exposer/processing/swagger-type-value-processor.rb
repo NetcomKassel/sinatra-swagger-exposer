@@ -25,12 +25,12 @@ module Sinatra
         end
 
         def validate_value(value)
+          response = {}
           @attributes_processors.each do |attribute_processor|
-            attribute_processor.process(value)
+            attribute_processor.process_value value, response
           end
-          value
+          response
         end
-
       end
     end
   end

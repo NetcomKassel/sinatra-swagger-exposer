@@ -38,12 +38,12 @@ class TestSwaggerBaseValueProcessor < Minitest::Test
     end
 
     def new_bvp_and_run(name, required, value, default = nil)
-      SwaggerTestingValueProcessor.new(name, required, default).process(value)
+      SwaggerTestingValueProcessor.new(name, required, default).process_value(value)
     end
 
     it 'should do nothing when the value is null' do
       processor = SwaggerFailingValueprocessor.new('plop', false, nil)
-      processor.process({'plop' => nil}).must_equal({'plop' => nil})
+      processor.process_value({'plop' => nil}).must_equal({'plop' => nil})
       processor.value.must_equal nil
     end
 
@@ -74,7 +74,7 @@ class TestSwaggerBaseValueProcessor < Minitest::Test
 
     it 'should call the delegate implementation' do
       processor = SwaggerTestingValueProcessor.new('plop', false, nil, 'return')
-      processor.process({'plop' => 'value'}).must_equal({'plop' => 'return'})
+      processor.process_value({'plop' => 'value'}).must_equal({'plop' => 'return'})
       processor.value.must_equal 'value'
     end
 

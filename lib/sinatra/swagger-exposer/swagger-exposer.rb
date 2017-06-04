@@ -189,22 +189,19 @@ module Sinatra
           if settings.result_validation
             begin
               # Inspired from Sinatra#invoke
-              if (Fixnum === response) or (String === response)
-                response = [response]
-              end
               if (Array === response) and (Fixnum === response.first)
                 response_for_validation = response.dup
                 response_status = response_for_validation.shift
                 response_body = response_for_validation.pop
                 response_headers = (response_for_validation.pop || {}).merge(self.response.header)
                 response_content_type = response_headers['Content-Type']
-                request_processor.validate_response(response_body, response_content_type, response_status)
-              elsif response.respond_to? :each
-                request_processor.validate_response(response.first.dup, self.response.header['Content-Type'], 200)
+                response = request_processor.validate_response(response_body, response_content_type, response_status)
+              else
+                response = request_processor.validate_response(response.dup, self.response.header['Content-Type'], 200)
               end
             rescue Sinatra::SwaggerExposer::SwaggerInvalidException => e
               content_type :json
-              throw :halt, [400, {:code => 400, :message => e.message}.to_json]
+              throw :halt, [400, { code: 400, message: e.message }.to_json]
             end
           end
           throw :halt, response

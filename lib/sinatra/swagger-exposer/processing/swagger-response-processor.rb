@@ -28,17 +28,18 @@ module Sinatra
         end
 
         # Validate a response
-        # @param response_body [String] the body
-        def validate_response(response_body)
-          parsed_response_body = nil
-          begin
-            parsed_response_body = ::JSON.parse(response_body)
-          rescue ::JSON::ParserError => e
-            raise SwaggerInvalidException.new("Response is not a valid json [#{response_body}]")
+        # @param response [Object] the response
+        def validate_response(response)
+          if response.is_a? String
+            begin
+              response = ::JSON.parse(response)
+            rescue ::JSON::ParserError => _
+              raise SwaggerInvalidException.new("Response is not a valid json [#{response}]")
+            end
           end
-          @processor.validate_value(parsed_response_body) if @processor
+          return @processor.validate_value(response) if @processor
+          response
         end
-
       end
     end
   end

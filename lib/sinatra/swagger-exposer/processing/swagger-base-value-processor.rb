@@ -30,32 +30,39 @@ module Sinatra
           @required || (!@default.nil?)
         end
 
-        def process(value, parsed_body = nil)
-          # unless value.is_a? Hash
-          #   raise SwaggerInvalidException.new("Value [#{@name}] should be an object but is a [#{parsed_body.class}]")
-          # end
-          if @attributes_processors.nil?
-            # No attribute processor for key
-            # Validate against self attributes
-            value = @default if value.nil? && @default
-            if value.nil? && !@required
-              # Nothing to do
-            elsif value.is_a? Hash
-              validate_value(value[@name])
-            else
-              validate_value(value)
-            end
-          else
-            # Validate against processor
-            @attributes_processors.each do |attributes_processor|
-              if attributes_processor.nil?
-                raise SwaggerInvalidException, "Extra object [#{@name}] found"
-              end
-              attributes_processor.validate_value(value[attributes_processor.name.to_s])
+        def process_value(value, response = {})
+          if value.nil?
+            if @params[:required].nil? || @params[:required]
+              raise SwaggerInvalidException, "Missing object [#{@name}]"
             end
           end
 
-          parsed_body[@name.to_s] = value unless parsed_body.nil?
+          if value.is_a? ActiveRecord::Base
+            # Single DB Object
+            real_value = value.send @name.to_sym
+            if %w[id created_at updated_at].include?(@name) && real_value.nil?
+              # Valid to be nil
+              response[@name] = nil
+            else
+              if self.is_a? SwaggerPrimitiveValueProcessor
+                response[@name] = validate_value real_value
+              elsif self.is_a? SwaggerTypeValueProcessor
+                response_sub = {}
+                response[@name] = response_sub
+                @attributes_processors.each do |attributes_processor|
+                  attributes_processor.process_value real_value, response_sub
+                end
+              end
+            end
+          elsif value.is_a? ActiveRecord::Relation
+            # Relation of Objects (like an Array)
+            value.each do |base_or_relation|
+              process_value base_or_relation
+            end
+          else
+            # Something else (String, Hash, Array or so)
+            response[@name] = validate_value value
+          end
         end
       end
     end

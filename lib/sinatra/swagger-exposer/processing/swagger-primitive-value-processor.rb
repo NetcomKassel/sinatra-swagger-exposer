@@ -117,7 +117,7 @@ module Sinatra
         def validate_value_date_time(value)
           begin
             if value.is_a? Time
-              Time.now.to_datetime.rfc3339
+              value.to_datetime.rfc3339
             else
               DateTime.rfc3339(value)
             end

@@ -16,7 +16,7 @@ module Sinatra
       TYPE_BYTE = 'byte'.freeze
       TYPE_DATE = 'date'.freeze
       TYPE_DOUBLE = 'double'.freeze
-      TYPE_DATE_TIME = 'date-time'.freeze
+      TYPE_DATE_TIME = 'dateTime'.freeze
       TYPE_FLOAT = 'float'.freeze
       TYPE_INTEGER = 'integer'.freeze
       TYPE_LONG = 'long'.freeze
@@ -67,7 +67,7 @@ module Sinatra
         PARAMS_EXCLUSIVE_MAXIMUM,
         PARAMS_MIN_LENGTH,
         PARAMS_MAX_LENGTH,
-      ]
+      ].freeze
 
     end
 

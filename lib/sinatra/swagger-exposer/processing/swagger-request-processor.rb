@@ -74,7 +74,7 @@ module Sinatra
 
           @processors_dispatchers.each do |processor_dispatcher|
             begin
-              processor_dispatcher.process_value(app, parsed_body)
+              processor_dispatcher.process(app, parsed_body)
             rescue SwaggerInvalidException => e
               app.content_type :json
               return [400, {:code => 400, :message => e.message}.to_json]

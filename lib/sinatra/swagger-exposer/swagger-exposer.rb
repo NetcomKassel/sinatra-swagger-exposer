@@ -197,7 +197,7 @@ module Sinatra
                 response_content_type = response_headers['Content-Type']
                 response = request_processor.validate_response(response_body, response_content_type, response_status)
               else
-                response = request_processor.validate_response(response.dup, self.response.header['Content-Type'], 200)
+                response = request_processor.validate_response(response, self.response.header['Content-Type'], 200)
               end
             rescue Sinatra::SwaggerExposer::SwaggerInvalidException => e
               content_type :json

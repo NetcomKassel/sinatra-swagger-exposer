@@ -61,9 +61,20 @@ module Sinatra
             end
           else
             # Something else (String, Hash, Array or so)
-            response[@name] = validate_value value
+            if value.is_a? Hash
+              response[@name] = validate_value ex_hash_value(value, @name)
+            else
+              response[@name] = validate_value value
+            end
           end
         end
+
+        private
+
+        def ex_hash_value(hash, key)
+          hash[key.to_s] || hash[key.to_sym]
+        end
+
       end
     end
   end

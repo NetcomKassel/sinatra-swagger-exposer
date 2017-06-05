@@ -116,28 +116,28 @@ module Sinatra
     def endpoint(params)
       params.each_pair do |param_name, param_value|
         case param_name
-          when :summary
-            endpoint_summary param_value
-          when :description
-            endpoint_description param_value
-          when :tags
-            endpoint_tags *param_value
-          when :produces
-            endpoint_produces *param_value
-          when :consumes
-            endpoint_consumes *param_value
-          when :path
-            endpoint_path param_value
-          when :parameters
-            param_value.each do |param, args_param|
-              endpoint_parameter param, *args_param
-            end
-          when :responses
-            param_value.each do |code, args_response|
-              endpoint_response code, *args_response
-            end
-          else
-            raise SwaggerInvalidException.new("Invalid endpoint parameter [#{param_name}]")
+        when :summary
+          endpoint_summary param_value
+        when :description
+          endpoint_description param_value
+        when :tags
+          endpoint_tags *param_value
+        when :produces
+          endpoint_produces *param_value
+        when :consumes
+          endpoint_consumes *param_value
+        when :path
+          endpoint_path param_value
+        when :parameters
+          param_value.each do |param, args_param|
+            endpoint_parameter param, *args_param
+          end
+        when :responses
+          param_value.each do |code, args_response|
+            endpoint_response code, *args_response
+          end
+        else
+          raise SwaggerInvalidException.new("Invalid endpoint parameter [#{param_name}]")
         end
       end
     end
@@ -195,10 +195,14 @@ module Sinatra
                 response_body = response_for_validation.pop
                 response_headers = (response_for_validation.pop || {}).merge(self.response.header)
                 response_content_type = response_headers['Content-Type']
-                response = request_processor.validate_response(response_body, response_content_type, response_status)
               else
-                response = request_processor.validate_response(response, self.response.header['Content-Type'], 200)
+                response_status = 200
+                response_body = response
+                response_headers = self.response.header
+                response_content_type = self.response.header['Content-Type']
               end
+              response_payload = request_processor.validate_response(response_body, response_content_type, response_status)
+              response = [response_status, response_headers, response_payload]
             rescue Sinatra::SwaggerExposer::SwaggerInvalidException => e
               content_type :json
               throw :halt, [400, { code: 400, message: e.message }.to_json]

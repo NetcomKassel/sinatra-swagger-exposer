@@ -39,7 +39,10 @@ module Sinatra
 
           if value.is_a? ActiveRecord::Base
             # Single DB Object
-            real_value = value.send @name.to_sym
+            real_value = nil
+            if value.respond_to? @name.to_sym
+              real_value = value.send @name.to_sym
+            end
             if %w[id created_at updated_at].include?(@name) && real_value.nil?
               # Valid to be nil
               response[@name] = nil

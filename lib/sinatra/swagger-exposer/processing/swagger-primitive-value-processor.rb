@@ -54,9 +54,9 @@ module Sinatra
 
         # Validate a boolean
         def validate_value_boolean(value)
-          if (value == 'true') || value.is_a?(TrueClass)
+          if (value == 'true') || (value == 1) || value.is_a?(TrueClass)
             true
-          elsif (value == 'false') || value.is_a?(FalseClass)
+          elsif (value == 'false') || (value == 0) || value.is_a?(FalseClass)
             false
           else
             raise SwaggerInvalidException.new("Value [#{name}] should be an boolean but is [#{value}]")

@@ -196,10 +196,6 @@ module Sinatra
                 response_body = response_for_validation.pop
                 response_headers = (response_for_validation.pop || {}).merge(self.response.header)
                 response_content_type = response_headers['Content-Type']
-              elsif Fixnum === response
-                response_status = response
-                response_headers = self.response.header
-                response_content_type = self.response.header['Content-Type']
               else
                 response_status = 200
                 response_body = response

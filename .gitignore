@@ -11,3 +11,4 @@
 /.idea/
 /example/.idea/
 /example/public/swagger-ui/*
+*.orig

@@ -61,10 +61,14 @@ module Sinatra
               # TODO: Fix method extra parameter
               @processor.process_value(value, HashForHeaders.new(value))
             when HOW_TO_PASS_BODY
-              real_parsed_body = {"#{@processor.name}": parsed_body}
-              @processor.attributes_processors.each do |attributes_processor|
-                attributes_processor.process_value parsed_body, real_parsed_body
-              end if @processor.attributes_processors
+              real_parsed_body = { "#{@processor.name}": parsed_body }
+              if @processor.is_a? SwaggerArrayValueProcessor
+                @processor.validate_value parsed_body
+              else
+                @processor.attributes_processors.each do |attributes_processor|
+                  attributes_processor.process_value parsed_body, real_parsed_body
+                end if @processor.attributes_processors
+              end
             when HOW_TO_PASS_FORM_DATA
               @processor.process_value(value, parsed_body)
           end

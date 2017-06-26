@@ -37,7 +37,9 @@ module Sinatra
             end
           end
 
-          if value.is_a? ActiveRecord::Base
+          if is_a? SwaggerArrayValueProcessor
+            validate_value value[@name.to_sym]
+          elsif value.is_a? ActiveRecord::Base
             # Single DB Object
             real_value = nil
             if value.respond_to? @name.to_sym
@@ -75,7 +77,7 @@ module Sinatra
         private
 
         def ex_hash_value(hash, key)
-          hash[key.to_s] || hash[key.to_sym]
+          hash[key.to_s]
         end
 
       end

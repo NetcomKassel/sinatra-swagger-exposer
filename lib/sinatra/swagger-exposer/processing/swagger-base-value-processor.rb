@@ -37,9 +37,7 @@ module Sinatra
             end
           end
 
-          if is_a? SwaggerArrayValueProcessor
-            validate_value value[@name.to_sym]
-          elsif value.is_a? ActiveRecord::Base
+          if value.is_a? ActiveRecord::Base
             # Single DB Object
             real_value = nil
             if value.respond_to? @name.to_sym
@@ -49,14 +47,17 @@ module Sinatra
               # Valid to be nil
               response[@name] = nil
             else
-              if self.is_a? SwaggerPrimitiveValueProcessor
+              if is_a? SwaggerPrimitiveValueProcessor
                 response[@name] = validate_value real_value
-              elsif self.is_a? SwaggerTypeValueProcessor
+              elsif is_a? SwaggerTypeValueProcessor
                 response_sub = {}
                 response[@name] = response_sub
                 @attributes_processors.each do |attributes_processor|
                   attributes_processor.process_value real_value, response_sub
                 end
+              elsif is_a? SwaggerArrayValueProcessor
+                response_sub = validate_value real_value
+                response[@name] = response_sub
               end
             end
           elsif value.is_a? ActiveRecord::Relation
@@ -64,6 +65,8 @@ module Sinatra
             value.each do |base_or_relation|
               process_value base_or_relation
             end
+          elsif is_a? SwaggerArrayValueProcessor
+            validate_value value[@name.to_sym]
           else
             # Something else (String, Hash, Array or so)
             if value.is_a? Hash

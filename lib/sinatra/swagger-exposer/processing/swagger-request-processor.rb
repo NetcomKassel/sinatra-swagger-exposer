@@ -59,17 +59,17 @@ module Sinatra
         # @param block the block containing the route content
         def run(app, block_params, &block)
           parsed_body = {}
+          body = app.request.body.read
           if JSON_CONTENT_TYPE.like?(app.env['CONTENT_TYPE'])
-            body = app.request.body.read
             unless body.empty?
               begin
                 parsed_body = JSON.parse(body)
               rescue JSON::ParserError => e
-                return [400, {code: 400, message: e.message}.to_json]
+                return [400, { code: 400, message: e.message }.to_json]
               end
             end
           else
-            # Unused
+            parsed_body = body
           end
 
           @processors_dispatchers.each do |processor_dispatcher|
@@ -77,7 +77,7 @@ module Sinatra
               processor_dispatcher.process(app, parsed_body)
             rescue SwaggerInvalidException => e
               app.content_type :json
-              return [400, {:code => 400, :message => e.message}.to_json]
+              return [400, { :code => 400, :message => e.message }.to_json]
             end
           end unless @processors_dispatchers.empty?
 
@@ -116,10 +116,10 @@ module Sinatra
             # No content and no content type => everything is OK
           elsif @produces
             # if there is no content type Sinatra will default to html so we simulate it here
-            if content_type.nil? && @produces_types.any? {|produce| produce.like?(HTML_CONTENT_TYPE)}
+            if content_type.nil? && @produces_types.any? { |produce| produce.like?(HTML_CONTENT_TYPE) }
               content_type = HTML_CONTENT_TYPE
             end
-            unless @produces_types.any? {|produce| produce.like?(content_type)}
+            unless @produces_types.any? { |produce| produce.like?(content_type) }
               raise SwaggerInvalidException.new("Undeclared content type [#{content_type}], declared content type are [#{@produces.join(', ')}]")
             end
           elsif !JSON_CONTENT_TYPE.like?(content_type)

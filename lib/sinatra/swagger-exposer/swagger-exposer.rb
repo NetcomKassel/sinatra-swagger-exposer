@@ -49,7 +49,7 @@ module Sinatra
           settings.swagger_endpoints
         ).to_swagger
         content_type :json
-        swagger_content.to_json
+        swagger_content
       end
 
       app.endpoint_summary 'Option method for the swagger endpoint, useful for some CORS stuff'
@@ -197,7 +197,7 @@ module Sinatra
                 response_headers = (response_for_validation.pop || {}).merge(self.response.header)
                 response_content_type = response_headers['Content-Type']
               else
-                response_status = 200
+                response_status = (Fixnum === response) ? response : 200
                 response_body = response
                 response_headers = self.response.header
                 response_content_type = self.response.header['Content-Type']
@@ -207,6 +207,10 @@ module Sinatra
             rescue Sinatra::SwaggerExposer::SwaggerInvalidException => e
               content_type :json
               throw :halt, [400, { code: 400, message: e.message }.to_json]
+            end
+          elsif !response.is_a?(String)
+            unless response.is_a?(Array) && response.first.is_a?(Fixnum)
+              response = response.to_json
             end
           end
           throw :halt, response

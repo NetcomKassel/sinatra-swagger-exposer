@@ -213,7 +213,7 @@ module Sinatra
             # FIXME: This simply returns all fields which might not be intended
             # to if returning sensitive data
             if JSON_CONTENT_TYPE.like?(
-              request.env['CONTENT_TYPE']
+              request.env['HTTP_ACCEPT']
             ) && response.respond_to?(:to_json)
               response = response.to_json
             end

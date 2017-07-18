@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'sinatra/activerecord'
 require 'json'
 
 require_relative 'configuration/swagger-endpoint'
@@ -15,6 +16,7 @@ module Sinatra
 
   # Expose swagger API from your Sinatra app
   module SwaggerExposer
+    JSON_CONTENT_TYPE = MIME::Types['application/json'].first
 
     # Called when we register the extension
     # @param app [Sinatra::Base]
@@ -48,7 +50,7 @@ module Sinatra
           settings.swagger_endpoints
         ).to_swagger
         content_type :json
-        swagger_content.to_json
+        swagger_content
       end
 
       app.endpoint_summary 'Option method for the swagger endpoint, useful for some CORS stuff'
@@ -116,28 +118,28 @@ module Sinatra
     def endpoint(params)
       params.each_pair do |param_name, param_value|
         case param_name
-        when :summary
-          endpoint_summary param_value
-        when :description
-          endpoint_description param_value
-        when :tags
-          endpoint_tags *param_value
-        when :produces
-          endpoint_produces *param_value
-        when :consumes
-          endpoint_consumes *param_value
-        when :path
-          endpoint_path param_value
-        when :parameters
-          param_value.each do |param, args_param|
-            endpoint_parameter param, *args_param
-          end
-        when :responses
-          param_value.each do |code, args_response|
-            endpoint_response code, *args_response
-          end
-        else
-          raise SwaggerInvalidException.new("Invalid endpoint parameter [#{param_name}]")
+          when :summary
+            endpoint_summary param_value
+          when :description
+            endpoint_description param_value
+          when :tags
+            endpoint_tags *param_value
+          when :produces
+            endpoint_produces *param_value
+          when :consumes
+            endpoint_consumes *param_value
+          when :path
+            endpoint_path param_value
+          when :parameters
+            param_value.each do |param, args_param|
+              endpoint_parameter param, *args_param
+            end
+          when :responses
+            param_value.each do |code, args_response|
+              endpoint_response code, *args_response
+            end
+          else
+            raise SwaggerInvalidException.new("Invalid endpoint parameter [#{param_name}]")
         end
       end
     end
@@ -196,7 +198,7 @@ module Sinatra
                 response_headers = (response_for_validation.pop || {}).merge(self.response.header)
                 response_content_type = response_headers['Content-Type']
               else
-                response_status = 200
+                response_status = (Fixnum === response) ? response : 200
                 response_body = response
                 response_headers = self.response.header
                 response_content_type = self.response.header['Content-Type']
@@ -206,6 +208,14 @@ module Sinatra
             rescue Sinatra::SwaggerExposer::SwaggerInvalidException => e
               content_type :json
               throw :halt, [400, { code: 400, message: e.message }.to_json]
+            end
+          elsif !response.is_a?(String)
+            # FIXME: This simply returns all fields which might not be intended
+            # to if returning sensitive data
+            if JSON_CONTENT_TYPE.like?(
+              request.env['HTTP_ACCEPT']
+            ) && response.respond_to?(:to_json)
+              response = response.to_json
             end
           end
           throw :halt, response

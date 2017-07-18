@@ -72,14 +72,16 @@ module Sinatra
             parsed_body = body
           end
 
-          @processors_dispatchers.each do |processor_dispatcher|
-            begin
-              processor_dispatcher.process(app, parsed_body)
-            rescue SwaggerInvalidException => e
-              app.content_type :json
-              return [400, { :code => 400, :message => e.message }.to_json]
+          unless @processors_dispatchers.empty?
+            @processors_dispatchers.each do |processor_dispatcher|
+              begin
+                processor_dispatcher.process(app, parsed_body)
+              rescue SwaggerInvalidException => e
+                app.content_type :json
+                return [400, { :code => 400, :message => e.message }.to_json]
+              end
             end
-          end unless @processors_dispatchers.empty?
+          end
 
           app.params['parsed_body'] = parsed_body
 

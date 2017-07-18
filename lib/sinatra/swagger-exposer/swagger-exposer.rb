@@ -16,6 +16,7 @@ module Sinatra
 
   # Expose swagger API from your Sinatra app
   module SwaggerExposer
+    JSON_CONTENT_TYPE = MIME::Types['application/json'].first
 
     # Called when we register the extension
     # @param app [Sinatra::Base]
@@ -117,28 +118,28 @@ module Sinatra
     def endpoint(params)
       params.each_pair do |param_name, param_value|
         case param_name
-        when :summary
-          endpoint_summary param_value
-        when :description
-          endpoint_description param_value
-        when :tags
-          endpoint_tags *param_value
-        when :produces
-          endpoint_produces *param_value
-        when :consumes
-          endpoint_consumes *param_value
-        when :path
-          endpoint_path param_value
-        when :parameters
-          param_value.each do |param, args_param|
-            endpoint_parameter param, *args_param
-          end
-        when :responses
-          param_value.each do |code, args_response|
-            endpoint_response code, *args_response
-          end
-        else
-          raise SwaggerInvalidException.new("Invalid endpoint parameter [#{param_name}]")
+          when :summary
+            endpoint_summary param_value
+          when :description
+            endpoint_description param_value
+          when :tags
+            endpoint_tags *param_value
+          when :produces
+            endpoint_produces *param_value
+          when :consumes
+            endpoint_consumes *param_value
+          when :path
+            endpoint_path param_value
+          when :parameters
+            param_value.each do |param, args_param|
+              endpoint_parameter param, *args_param
+            end
+          when :responses
+            param_value.each do |code, args_response|
+              endpoint_response code, *args_response
+            end
+          else
+            raise SwaggerInvalidException.new("Invalid endpoint parameter [#{param_name}]")
         end
       end
     end
@@ -209,7 +210,11 @@ module Sinatra
               throw :halt, [400, { code: 400, message: e.message }.to_json]
             end
           elsif !response.is_a?(String)
-            unless response.is_a?(Array) && response.first.is_a?(Fixnum)
+            # FIXME: This simply returns all fields which might not be intended
+            # to if returning sensitive data
+            if JSON_CONTENT_TYPE.like?(
+              request.env['CONTENT_TYPE']
+            ) && response.respond_to?(:to_json)
               response = response.to_json
             end
           end

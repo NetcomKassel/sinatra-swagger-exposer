@@ -70,9 +70,9 @@ module Sinatra
           else
             # Something else (String, Hash, Array or so)
             if value.is_a? Hash
-              response[@name] = validate_value ex_hash_value(value, @name)
+              response[@name] = validate_value(ex_hash_value(value, @name) || @default)
             else
-              response[@name] = validate_value value
+              response[@name] = validate_value(value || @default)
             end
           end
         end

@@ -212,10 +212,13 @@ module Sinatra
           elsif !response.is_a?(String)
             # FIXME: This simply returns all fields which might not be intended
             # to if returning sensitive data
-            if JSON_CONTENT_TYPE.like?(
-              request.env['HTTP_ACCEPT']
-            ) && response.respond_to?(:to_json)
-              response = response.to_json
+            if JSON_CONTENT_TYPE.like?(request.env['HTTP_ACCEPT'])
+              if response.is_a?(Array) && response.first.is_a?(Fixnum) &&
+                response.length == 3 && response[2].respond_to?(:to_json)
+                response[2] = response[2].to_json
+              else
+                response = response.to_json
+              end
             end
           end
           throw :halt, response

@@ -52,6 +52,7 @@ module Sinatra
         JSON_CONTENT_TYPE = MIME::Types['application/json'].first
         HTML_CONTENT_TYPE = MIME::Types['text/html'].first
         MULTIPART_FD_CONTENT_TYPE = MIME::Types['multipart/form-data'].first
+        FORM_URLENCODED = MIME::Types['application/x-www-form-urlencoded'].first
 
         # Run the processor the call the route content
         # @param app the sinatra app being run
@@ -68,6 +69,8 @@ module Sinatra
                 return [400, { code: 400, message: e.message }.to_json]
               end
             end
+          elsif FORM_URLENCODED.like?(app.env['CONTENT_TYPE'])
+            parsed_body = app.request.params
           else
             parsed_body = body
           end

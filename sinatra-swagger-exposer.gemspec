@@ -10,6 +10,7 @@ Gem::Specification.new do |spec|
   spec.name = 'sinatra-swagger-exposer'
   spec.version = Sinatra::SwaggerExposer::VERSION
   spec.authors = ['Julien Kirch', 'Ralf Herzog']
+  spec.email = 'ralf.herzog@netcom-kassel.de'
 
   spec.summary = 'Expose swagger API from your Sinatra app'
   spec.description = 'This Sinatra extension enable you to add metadata to your
@@ -23,12 +24,11 @@ Gem::Specification.new do |spec|
                .reject { |f| excluded_patterns.any? { |ep| f.start_with?(ep) } }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'sinatra', '~> 2.0'
-  spec.add_dependency 'mime-types', '~> 2.6.2'
+  spec.add_runtime_dependency 'sinatra', '~> 2.0'
+  spec.add_runtime_dependency 'mime-types', '~> 2.6', '>= 2.6.2'
 
-  spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'minitest', '~> 5.5'
   spec.add_development_dependency 'rack-test', '~> 0.6.3'
-  spec.add_development_dependency 'simplecov'
+  spec.add_development_dependency 'simplecov', '~> 0'
 end

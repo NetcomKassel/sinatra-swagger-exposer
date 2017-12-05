@@ -69,7 +69,7 @@ module Sinatra
                 return [400, { code: 400, message: e.message }.to_json]
               end
             end
-          elsif FORM_URLENCODED.like?(app.env['CONTENT_TYPE'])
+          elsif FORM_URLENCODED.like?(app.env['CONTENT_TYPE']) || MULTIPART_FD_CONTENT_TYPE.like?(app.env['CONTENT_TYPE'])
             parsed_body = app.request.params
           else
             parsed_body = body

@@ -107,6 +107,8 @@ module Sinatra
             if JSON_CONTENT_TYPE.like?(content_type) && response_processor
               response = response_processor.validate_response(response_body)
               response.to_json
+            else
+              response_body
             end
           else
             raise SwaggerInvalidException.new("Status with unknown response status [#{response_status}], known statuses are [#{@response_processors.keys.join(', ')}] response value is #{response_body}")

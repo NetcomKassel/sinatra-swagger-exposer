@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
                .reject { |f| excluded_patterns.any? { |ep| f.start_with?(ep) } }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'sinatra', '~> 2.0', '>= 2.0.1'
+  spec.add_runtime_dependency 'sinatra', '~> 2.0', '>= 2.0.2'
   spec.add_runtime_dependency 'mime-types', '~> 2.6', '>= 2.6.2'
 
   spec.add_development_dependency 'rake', '~> 10.0'

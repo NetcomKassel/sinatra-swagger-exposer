@@ -1,31 +1,31 @@
 GIT
   remote: https://github.com/NetcomKassel/sinatra-swagger-exposer.git
-  revision: 3f2ffe54162bc0244e2fa9a7d7f1b3da988c0b77
+  revision: 35e10fd3f91fb8a4390be281bd4fb766f8c90518
   specs:
-    sinatra-swagger-exposer (1.0.13)
+    sinatra-swagger-exposer (1.0.15)
       mime-types (~> 2.6, >= 2.6.2)
       sinatra (~> 2.0, >= 2.0.2)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (5.2.4.1)
-      activesupport (= 5.2.4.1)
-    activerecord (5.2.4.1)
-      activemodel (= 5.2.4.1)
-      activesupport (= 5.2.4.1)
+    activemodel (5.2.4.3)
+      activesupport (= 5.2.4.3)
+    activerecord (5.2.4.3)
+      activemodel (= 5.2.4.3)
+      activesupport (= 5.2.4.3)
       arel (>= 9.0)
-    activesupport (5.2.4.1)
+    activesupport (5.2.4.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (9.0.0)
     concurrent-ruby (1.1.6)
-    i18n (1.8.2)
+    i18n (1.8.3)
       concurrent-ruby (~> 1.0)
     mime-types (2.99.3)
-    minitest (5.14.0)
+    minitest (5.14.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     rack (2.2.3)
@@ -38,13 +38,13 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.8.1)
       tilt (~> 2.0)
-    sinatra-activerecord (2.0.14)
-      activerecord (>= 3.2)
+    sinatra-activerecord (2.0.18)
+      activerecord (>= 4.1)
       sinatra (>= 1.0)
     sqlite3 (1.4.2)
     thread_safe (0.3.6)
     tilt (2.0.10)
-    tzinfo (1.2.6)
+    tzinfo (1.2.7)
       thread_safe (~> 0.1)
 
 PLATFORMS

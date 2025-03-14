@@ -1,4 +1,5 @@
 /.bundle/
+/.idea/
 /.yardoc
 /Gemfile.lock
 /_yardoc/
@@ -8,7 +9,8 @@
 /spec/reports/
 /tmp/
 /sinatra-swagger-exposer-*.gem
-/.idea/
+/example/.bundle
 /example/.idea/
+/example/Gemfile.lock
 /example/public/swagger-ui/*
 *.orig
